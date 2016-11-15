@@ -137,3 +137,8 @@ class VPN(Base):
 
 class ConfigurationItem(Base):
     __table__ = 'cmdb_ci.do'
+
+
+class Location(Base):
+    __table__ = 'cmn_location.do'
+
