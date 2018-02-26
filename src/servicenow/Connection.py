@@ -2,12 +2,13 @@ import requests
 import json
 
 from . import Utils
+from requests.adapters import HTTPAdapter
 
 
 class Auth(object):
 
     def __init__(self, username, password, instance, timeout=60,
-                 debug=False, api='JSON', proxies={}, verify=True):
+                 debug=False, api='JSON', proxies={}, verify=True, max_retries=3):
         self.username = username
         self.password = password
         if 'https://' in instance:
@@ -22,6 +23,9 @@ class Auth(object):
         self.verify = verify
         if api.startswith('JSON'):
             self.session.headers.update({'Accept': 'application/json'})
+        adapter = HTTPAdapter(max_retries=max_retries)
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
 
     def _list(self, table, meta={}, **kwargs):
         query = Utils.format_query(meta, kwargs.get('metaon', {}))
